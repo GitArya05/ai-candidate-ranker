@@ -1,0 +1,91 @@
+# Redrob Hackathon — Submission Metadata Template
+#
+# Copy this file to your repo root as `submission_metadata.yaml` and fill it in.
+# The fields here should match what you submit via the portal at upload time.
+# Stage 3 review uses this file to verify your portal metadata.
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "Neural Horizons" # Used in leaderboard and announcements
+
+primary_contact:
+  name: "Arya Urkude"
+  email: "aryaurkude@gmail.com" # Used for all organizer communication
+  phone: "+91-8999306515" # Used for top-50 / top-10 outreach
+
+team_members:
+  - name: "Arya Urkude"
+    email: "aryaurkude@gmail.com"
+    role: "ML Engineer" # Optional, e.g. "Team Lead", "Backend", "Data"
+  - name: "Om Bhattalwar"
+    email: "ombhattalwar2005@gmail.com"
+    role: "ML Engineer"
+  # Add more members as needed; solo participants list just one member
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/GitArya05/ai-candidate-ranker.git"
+# Required. Must be reachable. Private repos OK if you can grant organizer
+# access at Stage 3 (the email to add will be communicated then).
+
+sandbox_link: "https://a-urkude-candidate-ranker.hf.space"
+# Required. A working hosted environment where the ranker can be run on a small
+# candidate sample. See Section 10.5 of submission_spec.md for acceptable
+# platforms (HuggingFace Spaces, Streamlit Cloud, Replit, Colab, Docker, Binder).
+
+reproduce_command: "python src/main.py"
+# The single command that produces submission.csv from candidates.jsonl.
+# Should run end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Lenovo" # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
+  cpu_cores: 8 # Number of CPU cores used
+  ram_gb: 8 # Available RAM in GB
+  python_version: "3.11.4" # python --version
+  os: "Windows 11" # Or "Ubuntu 22.04 LTS", etc.
+  uses_gpu_for_inference: false # Must be false — see compute constraints
+  has_network_during_ranking: false # Must be false — no API calls during ranking
+  pre_computation_required: false # true if you pre-compute embeddings or train models offline
+  pre_computation_time_minutes: 0 # Approximate, if applicable
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+# Transparency only — declared use is NOT penalized. Be honest. Stage 5 interview
+# may verify these declarations against your code; declarations that contradict
+# your code or your interview are flagged.
+ai_tools_used:
+  - "Gemini"
+  # Other options: "ChatGPT", "Cursor", "Gemini", "Codeium", "Other", "None"
+
+ai_usage_summary: |
+  Briefly describe how AI tools were used. Examples:
+  - Used Gemini while setting up the space in HuggingFace.
+  - Also used gemini to generate insights for presentation.
+
+# ============================================================================
+# Approach summary (optional but recommended)
+# ============================================================================
+methodology_summary: |
+  Two-stage retrieval and ranking pipeline. First, text is extracted from the job 
+  description and candidate JSONL data. Stage 1 uses dense vector embeddings via 
+  sentence-transformers (all-MiniLM-L6-v2) to populate a FAISS vector index, performing 
+  semantic search to pull relevant candidate pools. Stage 2 applies an alignment layer 
+  using spaCy to evaluate and re-rank matching entities, core technical competencies, 
+  and skill density constraints. Runs end-to-end entirely on CPU in under 2 minutes for 
+  100K profiles.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true # I have read submission_spec.md in full
+  code_is_original_work: true # My code is my team's original work (using AI as a tool is fine)
+  no_collusion: true # I have not coordinated my submission with other teams
+  honeypot_check_done: true # OPTIONAL — set true if you explicitly checked for honeypots in your ranking
+  reproduction_tested: true # I have tested that my reproduce_command runs end-to-end
