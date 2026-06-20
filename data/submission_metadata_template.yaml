@@ -20,7 +20,7 @@ team_members:
     role: "ML Engineer" # Optional, e.g. "Team Lead", "Backend", "Data"
   - name: "Om Bhattalwar"
     email: "ombhattalwar2005@gmail.com"
-    role: "ML Engineer"
+    role: "Backend"
   # Add more members as needed; solo participants list just one member
 
 # ============================================================================
