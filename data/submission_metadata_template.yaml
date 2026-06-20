@@ -44,7 +44,7 @@ reproduce_command: "python src/main.py"
 # ============================================================================
 compute:
   platform: "Lenovo" # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
-  cpu_cores: 8 # Number of CPU cores used
+  cpu_cores: 6 # Number of CPU cores used
   ram_gb: 8 # Available RAM in GB
   python_version: "3.11.4" # python --version
   os: "Windows 11" # Or "Ubuntu 22.04 LTS", etc.
