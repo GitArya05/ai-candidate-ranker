@@ -9,14 +9,11 @@ from sentence_transformers import SentenceTransformer
 class CandidateVectorIndex:
     def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
         print(f"[Initialization] Loading embedding model: {model_name}...")
-        # Loads natively on your Windows CPU
         self.model = SentenceTransformer(model_name)
-        self.dimension = 384  # Dimensionality of all-MiniLM-L6-v2
+        self.dimension = 384 
         
-        # Initialize an empty Flat Inner Product FAISS index for Cosine Similarity
         self.index = faiss.IndexFlatIP(self.dimension)
         
-        # Maps FAISS numeric row positions back to your actual Candidate IDs
         self.id_map = []
 
     def prepare_text(self, candidate_obj):
@@ -24,19 +21,16 @@ class CandidateVectorIndex:
         Safely extracts and combines text components from a candidate object,
         ensuring no type mismatches (like None or dicts) crash the pipeline.
         """
-        # 1. Safely extract profile metadata
         profile = candidate_obj.get("profile") or {}
         title = str(profile.get("title", "")).strip()
         summary = str(profile.get("summary", "")).strip()
         
-        # 2. Bulletproof conversion of skills array to a clean string
         skills_data = candidate_obj.get("skills")
         skills_list = []
         
         if isinstance(skills_data, list):
             for skill in skills_data:
                 if isinstance(skill, dict):
-                    # If skills are objects (e.g., {"name": "Python", "level": "Expert"})
                     skills_list.append(str(skill.get("name", "")))
                 elif skill:
                     skills_list.append(str(skill))
@@ -45,7 +39,6 @@ class CandidateVectorIndex:
             
         skills_str = ", ".join([s for s in skills_list if s.strip()])
         
-        # 3. Assemble into a single cohesive context block
         text_segments = [
             f"Job Title: {title}.",
             f"Summary: {summary}.",
@@ -64,7 +57,6 @@ class CandidateVectorIndex:
         
         embeddings_list = []
         
-        # Stream one line at a time using your jsonlines library
         with jsonlines.open(normalized_path) as reader:
             for idx, obj in enumerate(reader):
                 if max_candidates and idx >= max_candidates:
@@ -73,10 +65,8 @@ class CandidateVectorIndex:
                 candidate_id = obj.get("candidate_id") or obj.get("id")
                 rich_text = self.prepare_text(obj)
                 
-                # Generate embedding vector
                 embedding = self.model.encode(rich_text, convert_to_numpy=True)
                 
-                # Normalize vector to unit length for Cosine Similarity calculations
                 faiss.normalize_L2(embedding.reshape(1, -1))
                 
                 embeddings_list.append(embedding)
@@ -114,22 +104,17 @@ class CandidateVectorIndex:
 if __name__ == "__main__":
     print("=== Execution Trace: Phase 06 Vector Indexing ===")
     
-    # 1. Initialize the engine
     search_engine = CandidateVectorIndex()
     
-    # 2. Extract the actual search criteria using docx2txt
     jd_path = "data/job_description.docx"
     print(f"[Processing] Extracting search targets from {jd_path}...")
     job_description_text = docx2txt.process(jd_path)
     
-    # 3. Build index from the uncompressed candidates file
     candidates_path = "data/candidates.jsonl"
     
     if os.path.exists(candidates_path):
-        # We test with the first 500 records to save execution time
         search_engine.build_index(candidates_path, max_candidates=500)
         
-        # 4. Search the index using the actual text from your job_description.docx
         print("\n[Querying Engine] Executing vector match against Job Description criteria...")
         top_matches = search_engine.search(job_description_text, top_k=5)
         
