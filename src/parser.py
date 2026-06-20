@@ -25,7 +25,6 @@ def stream_and_validate_candidates(jsonl_path, schema_path=None):
         with open(os.path.normpath(schema_path), 'r', encoding='utf-8') as sf:
             schema = json.load(sf)
             
-    # Open streaming channel using jsonlines
     with jsonlines.open(normalized_jsonl) as reader:
         for idx, obj in enumerate(reader):
             if schema:
@@ -33,24 +32,21 @@ def stream_and_validate_candidates(jsonl_path, schema_path=None):
                     validate(instance=obj, schema=schema)
                 except ValidationError as e:
                     print(f"[Warning] Row {idx} failed structural schema evaluation: {e.message}")
-                    continue # Skip or log corrupted data packets
+                    continue 
             yield obj
 
 if __name__ == "__main__":
     print("=== Execution Trace: Phase 05 Core Ingestion ===")
     
-    # 1. Test Word Document Extraction Layer
     jd_raw = parse_docx("data/job_description.docx")
     print(f"[Success] Parsed Job Description. Total character length: {len(jd_raw)}")
     
-    # 2. Test Stream & Validation Pipeline
     print("\n[Processing] Initializing JSONL stream validation...")
     streamer = stream_and_validate_candidates(
         jsonl_path="data/candidates.jsonl", 
         schema_path="data/candidate_schema.json"
     )
     
-    # Extract the first valid processed element
     try:
         sample_candidate = next(streamer)
         print(f"[Success] Stream engine verified! Parsed Candidate ID: {sample_candidate.get('id')}")
