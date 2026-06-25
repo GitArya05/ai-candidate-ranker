@@ -30,7 +30,8 @@ github_repo: "https://github.com/GitArya05/ai-candidate-ranker.git"
 # Required. Must be reachable. Private repos OK if you can grant organizer
 # access at Stage 3 (the email to add will be communicated then).
 
-sandbox_link: "https://a-urkude-candidate-ranker.hf.space"
+sandbox_link: "https://colab.research.google.com/drive/14-f6-NIQVJ4mbgfKP0UjQu3lZ7WmJFQQ?usp=sharing
+"
 # Required. A working hosted environment where the ranker can be run on a small
 # candidate sample. See Section 10.5 of submission_spec.md for acceptable
 # platforms (HuggingFace Spaces, Streamlit Cloud, Replit, Colab, Docker, Binder).
